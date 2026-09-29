@@ -1,0 +1,307 @@
+{
+  "info": {
+    "name": "IssueDesk API",
+    "description": "Colección de la API de gestión de incidencias (FastAPI + Firestore). Ejecuta primero **Auth / Login**: el script de prueba guarda el JWT en la variable `accessToken`, que el resto de las peticiones envía como Bearer token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "__BASE_URL__" },
+    { "key": "username", "value": "evaluador" },
+    { "key": "password", "value": "Gapsi#Evalua2026" },
+    { "key": "accessToken", "value": "" },
+    { "key": "issueId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health check",
+          "request": { "auth": { "type": "noauth" }, "method": "GET", "url": "{{baseUrl}}/health" },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}" },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Devuelve un JWT', () => pm.expect(body.access_token.split('.')).to.have.lengthOf(3));",
+                  "pm.collectionVariables.set('accessToken', body.access_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login con credenciales inválidas (401)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"contraseña-incorrecta\"\n}" },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"] }
+            }
+          ]
+        },
+        {
+          "name": "Usuario autenticado",
+          "request": { "method": "GET", "url": "{{baseUrl}}/auth/me" },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Issues",
+      "item": [
+        {
+          "name": "Crear incidencia",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Incidencia creada desde Postman\",\n  \"description\": \"Validación de la colección de la API.\",\n  \"priority\": \"high\"\n}"
+            },
+            "url": "{{baseUrl}}/issues"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.test('Estado inicial abierto', () => pm.expect(body.status).to.eql('open'));",
+                  "pm.collectionVariables.set('issueId', body.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar incidencias",
+          "request": { "method": "GET", "url": "{{baseUrl}}/issues" },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] }
+            }
+          ]
+        },
+        {
+          "name": "Filtrar por estado",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/issues?status=open",
+              "host": ["{{baseUrl}}"],
+              "path": ["issues"],
+              "query": [{ "key": "status", "value": "open", "description": "open | in_progress | done" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Solo incidencias abiertas', () => pm.response.json().forEach((issue) => pm.expect(issue.status).to.eql('open')));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Filtrar por prioridad",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/issues?priority=high",
+              "host": ["{{baseUrl}}"],
+              "path": ["issues"],
+              "query": [{ "key": "priority", "value": "high", "description": "high | medium | low" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Solo prioridad alta', () => pm.response.json().forEach((issue) => pm.expect(issue.priority).to.eql('high')));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Filtrar por estado y prioridad",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/issues?status=open&priority=high",
+              "host": ["{{baseUrl}}"],
+              "path": ["issues"],
+              "query": [
+                { "key": "status", "value": "open" },
+                { "key": "priority", "value": "high" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener incidencia",
+          "request": { "method": "GET", "url": "{{baseUrl}}/issues/{{issueId}}" },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar estado",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"in_progress\"\n}" },
+            "url": "{{baseUrl}}/issues/{{issueId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Estado en progreso', () => pm.expect(pm.response.json().status).to.eql('in_progress'));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar prioridad",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"priority\": \"low\"\n}" },
+            "url": "{{baseUrl}}/issues/{{issueId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('Prioridad baja', () => pm.expect(pm.response.json().priority).to.eql('low'));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar estado y prioridad",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"done\",\n  \"priority\": \"medium\"\n}" },
+            "url": "{{baseUrl}}/issues/{{issueId}}"
+          }
+        },
+        {
+          "name": "Resumen por estado",
+          "request": { "method": "GET", "url": "{{baseUrl}}/issues/summary" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test('El total coincide con la suma por estado', () => {",
+                  "  const sum = Object.values(body.by_status).reduce((a, b) => a + b, 0);",
+                  "  pm.expect(body.total).to.eql(sum);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Errores",
+      "item": [
+        {
+          "name": "Sin token (401)",
+          "request": { "auth": { "type": "noauth" }, "method": "GET", "url": "{{baseUrl}}/issues" },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"] }
+            }
+          ]
+        },
+        {
+          "name": "Datos inválidos (422)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"ab\",\n  \"description\": \"\",\n  \"priority\": \"urgente\"\n}" },
+            "url": "{{baseUrl}}/issues"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.test('422 Unprocessable', () => pm.response.to.have.status(422));"] }
+            }
+          ]
+        },
+        {
+          "name": "Incidencia inexistente (404)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"done\"\n}" },
+            "url": "{{baseUrl}}/issues/no-existe"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"] }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
