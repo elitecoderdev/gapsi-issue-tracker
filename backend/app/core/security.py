@@ -70,8 +70,9 @@ class LoginRateLimiter:
     def ensure_allowed(self, key: str) -> None:
         now = time.monotonic()
         with self._lock:
-            attempts = self._prune(key, now)
-            if len(attempts) >= self._max_attempts:
+            self._evict_expired(now)
+            attempts = self._attempts.get(key)
+            if attempts and len(attempts) >= self._max_attempts:
                 retry_after = int(self._window_seconds - (now - attempts[0])) + 1
                 raise TooManyAttemptsError(retry_after)
 
@@ -83,8 +84,10 @@ class LoginRateLimiter:
         with self._lock:
             self._attempts.pop(key, None)
 
-    def _prune(self, key: str, now: float) -> deque[float]:
-        attempts = self._attempts.setdefault(key, deque())
-        while attempts and now - attempts[0] > self._window_seconds:
-            attempts.popleft()
-        return attempts
+    def _evict_expired(self, now: float) -> None:
+        for key in list(self._attempts):
+            attempts = self._attempts[key]
+            while attempts and now - attempts[0] > self._window_seconds:
+                attempts.popleft()
+            if not attempts:
+                del self._attempts[key]
