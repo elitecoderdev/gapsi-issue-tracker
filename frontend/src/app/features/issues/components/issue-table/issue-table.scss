@@ -1,0 +1,127 @@
+:host {
+  display: block;
+}
+
+.table__head,
+.table__row {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) 140px 160px 150px 150px;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+}
+
+.table__head {
+  height: 44px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.table__row {
+  min-height: 76px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-top: 1px solid var(--border);
+  transition: background-color 120ms ease, opacity 120ms ease;
+
+  &:hover { background: var(--surface-2); }
+  &.is-pending { opacity: 0.6; }
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.cell--issue {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.cell__label {
+  display: none;
+}
+
+.issue__title {
+  max-width: 100%;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.issue__description {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 13px;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.issue__id {
+  color: var(--text-subtle);
+  font-size: 11px;
+}
+
+.inline-select .select {
+  width: 136px;
+  border-color: transparent;
+  background-color: var(--tone-soft);
+  color: var(--tone);
+  font-weight: 600;
+
+  &:hover:not(:disabled),
+  &:focus { border-color: var(--tone); }
+
+  option {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.date__time {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.align-right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+@media (max-width: 960px) {
+  .table__head { display: none; }
+
+  .table__row {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .cell--issue { grid-column: 1 / -1; }
+
+  .cell:not(.cell--issue) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .cell__label {
+    display: block;
+    color: var(--text-subtle);
+    font-size: 11px;
+  }
+
+  .align-right { text-align: left; }
+}

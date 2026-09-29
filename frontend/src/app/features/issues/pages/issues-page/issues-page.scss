@@ -1,0 +1,75 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  p { margin-top: 4px; color: var(--text-muted); }
+}
+
+.page-header__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.panel {
+  overflow: hidden;
+}
+
+.panel__footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+app-issue-table {
+  transition: opacity 150ms ease;
+
+  &.is-refreshing { opacity: 0.75; }
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 64px 24px;
+  color: var(--text-muted);
+  text-align: center;
+
+  strong { color: var(--text); font-weight: 600; }
+
+  &--error strong { color: var(--red); }
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.skeleton__row {
+  height: 76px;
+  background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@media (max-width: 720px) {
+  .page-header__actions { width: 100%; }
+  .page-header__actions .btn--primary { flex: 1; }
+}

@@ -1,0 +1,66 @@
+<div class="table" role="table" aria-label="Listado de incidencias">
+  <div class="table__head" role="row">
+    <span role="columnheader">Incidencia</span>
+    <span role="columnheader">Prioridad</span>
+    <span role="columnheader">Estado</span>
+    <span role="columnheader">Creada por</span>
+    <span role="columnheader" class="align-right">Última actualización</span>
+  </div>
+
+  @for (issue of issues(); track issue.id) {
+    <div class="table__row" role="row" [class.is-pending]="pendingIds().has(issue.id)">
+      <div class="cell cell--issue" role="cell">
+        <span class="issue__title">{{ issue.title }}</span>
+        <span class="issue__description">{{ issue.description }}</span>
+        <span class="issue__id mono">#{{ issue.id.slice(0, 8) }}</span>
+      </div>
+
+      <div class="cell" role="cell">
+        <span class="cell__label">Prioridad</span>
+        <label class="inline-select" [class]="'tone-' + priorityMeta[issue.priority].tone">
+          <span class="visually-hidden">Cambiar prioridad de {{ issue.title }}</span>
+          <select
+            class="select select--compact"
+            [disabled]="pendingIds().has(issue.id)"
+            (change)="onPriorityChange(issue, $event)"
+          >
+            @for (priority of priorities; track priority) {
+              <option [value]="priority" [selected]="priority === issue.priority">
+                {{ priorityMeta[priority].label }}
+              </option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="cell" role="cell">
+        <span class="cell__label">Estado</span>
+        <label class="inline-select" [class]="'tone-' + statusMeta[issue.status].tone">
+          <span class="visually-hidden">Cambiar estado de {{ issue.title }}</span>
+          <select
+            class="select select--compact"
+            [disabled]="pendingIds().has(issue.id)"
+            (change)="onStatusChange(issue, $event)"
+          >
+            @for (status of statuses; track status) {
+              <option [value]="status" [selected]="status === issue.status">{{ statusMeta[status].label }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="cell" role="cell">
+        <span class="cell__label">Creada por</span>
+        <app-badge tone="muted">{{ issue.createdBy }}</app-badge>
+      </div>
+
+      <div class="cell align-right" role="cell">
+        <span class="cell__label">Actualizada</span>
+        <span class="date tabular">
+          <span>{{ issue.updatedAt | date: 'dd MMM yyyy' }}</span>
+          <span class="date__time">{{ issue.updatedAt | date: 'HH:mm' }}</span>
+        </span>
+      </div>
+    </div>
+  }
+</div>

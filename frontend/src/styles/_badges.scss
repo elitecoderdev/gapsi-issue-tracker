@@ -1,0 +1,28 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--tone-soft);
+  color: var(--tone);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+.tone-green { --tone: var(--green); --tone-soft: var(--green-soft); }
+.tone-red { --tone: var(--red); --tone-soft: var(--red-soft); }
+.tone-orange { --tone: var(--orange); --tone-soft: var(--orange-soft); }
+.tone-blue { --tone: var(--blue); --tone-soft: var(--blue-soft); }
+.tone-brand { --tone: var(--brand); --tone-soft: var(--brand-soft); }
+.tone-muted { --tone: var(--text-muted); --tone-soft: rgb(132 142 156 / 12%); }

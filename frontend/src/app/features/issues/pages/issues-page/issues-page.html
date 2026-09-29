@@ -1,0 +1,78 @@
+<header class="page-header">
+  <div>
+    <h1>Incidencias</h1>
+    <p>Visualiza, filtra y actualiza el estado de las incidencias del equipo.</p>
+  </div>
+  <div class="page-header__actions">
+    <button type="button" class="btn btn--ghost" aria-label="Actualizar" (click)="store.refresh()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6" />
+      </svg>
+    </button>
+    <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+      Nueva incidencia
+    </button>
+  </div>
+</header>
+
+<app-summary-cards
+  [summary]="store.summary()"
+  [activeStatus]="store.filters().status"
+  [loading]="store.isSummaryLoading()"
+  (statusSelected)="store.setStatusFilter($event)"
+/>
+
+<section class="panel card">
+  <app-issue-toolbar
+    [filters]="store.filters()"
+    [hasActiveFilters]="store.hasActiveFilters()"
+    [(searchTerm)]="store.searchTerm"
+    (statusChange)="store.setStatusFilter($event)"
+    (priorityChange)="store.setPriorityFilter($event)"
+    (clear)="store.clearFilters()"
+  />
+
+  @if (store.loadError(); as error) {
+    <div class="state state--error">
+      <strong>{{ error }}</strong>
+      <button type="button" class="btn btn--ghost btn--sm" (click)="store.refresh()">Reintentar</button>
+    </div>
+  } @else if (store.isLoading() && store.issues().length === 0) {
+    <div class="skeleton" aria-label="Cargando incidencias">
+      @for (row of [1, 2, 3, 4]; track row) {
+        <div class="skeleton__row"></div>
+      }
+    </div>
+  } @else if (store.issues().length === 0) {
+    <div class="state">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M9 11l3 3 8-8" />
+        <path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9" />
+      </svg>
+      @if (store.hasActiveFilters()) {
+        <strong>No hay incidencias con estos filtros</strong>
+        <button type="button" class="btn btn--ghost btn--sm" (click)="store.clearFilters()">Limpiar filtros</button>
+      } @else {
+        <strong>Aún no hay incidencias registradas</strong>
+        <button type="button" class="btn btn--primary btn--sm" (click)="openCreate()">Crear la primera</button>
+      }
+    </div>
+  } @else {
+    <app-issue-table
+      [issues]="store.issues()"
+      [pendingIds]="store.pendingIds()"
+      [class.is-refreshing]="store.isLoading()"
+      (changeRequested)="applyChange($event)"
+    />
+    <footer class="panel__footer tabular">
+      Mostrando {{ store.issues().length }} {{ store.issues().length === 1 ? 'incidencia' : 'incidencias' }}
+    </footer>
+  }
+</section>
+
+@if (isCreateOpen()) {
+  <app-issue-create-drawer (closed)="closeCreate()" (created)="closeCreate()" />
+}

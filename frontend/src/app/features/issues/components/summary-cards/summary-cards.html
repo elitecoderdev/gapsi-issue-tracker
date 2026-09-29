@@ -1,0 +1,19 @@
+<div class="cards">
+  @for (card of cards(); track card.label) {
+    <button
+      type="button"
+      class="summary-card card"
+      [class]="'tone-' + card.tone"
+      [class.is-active]="card.status === activeStatus()"
+      [attr.aria-pressed]="card.status === activeStatus()"
+      (click)="statusSelected.emit(card.status)"
+    >
+      <span class="summary-card__label">{{ card.label }}</span>
+      <span class="summary-card__value tabular" [class.is-loading]="loading()">{{ card.count }}</span>
+      <span class="summary-card__meta">
+        <span class="summary-card__bar"><span [style.width.%]="card.share"></span></span>
+        <span class="tabular">{{ card.share }}%</span>
+      </span>
+    </button>
+  }
+</div>

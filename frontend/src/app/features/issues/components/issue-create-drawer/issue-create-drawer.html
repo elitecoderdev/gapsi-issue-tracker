@@ -1,0 +1,64 @@
+<div class="backdrop" (click)="close()" aria-hidden="true"></div>
+
+<aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="create-issue-title">
+  <header class="drawer__header">
+    <div>
+      <h2 id="create-issue-title">Nueva incidencia</h2>
+      <p>Describe el problema para que el equipo pueda darle seguimiento.</p>
+    </div>
+    <button type="button" class="drawer__close" aria-label="Cerrar" (click)="close()">×</button>
+  </header>
+
+  <form class="drawer__body" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <label class="field">
+      <span class="field__label">Título</span>
+      <input
+        #titleInput
+        class="input"
+        formControlName="title"
+        placeholder="Ej. Error al guardar un pedido"
+        [attr.maxlength]="titleMaxLength"
+        [class.is-invalid]="form.controls.title.touched && form.controls.title.invalid"
+      />
+      <app-field-error [control]="form.controls.title" />
+    </label>
+
+    <label class="field">
+      <span class="field__label">Descripción</span>
+      <textarea
+        class="textarea"
+        formControlName="description"
+        rows="6"
+        placeholder="¿Qué ocurrió? ¿Cómo se reproduce? ¿Qué se esperaba?"
+        [attr.maxlength]="descriptionMaxLength"
+        [class.is-invalid]="form.controls.description.touched && form.controls.description.invalid"
+      ></textarea>
+      <span class="field__hint tabular">{{ form.controls.description.value.length }} / {{ descriptionMaxLength }}</span>
+      <app-field-error [control]="form.controls.description" />
+    </label>
+
+    <fieldset class="field priority">
+      <legend class="field__label">Prioridad</legend>
+      <div class="priority__options">
+        @for (priority of priorities; track priority) {
+          <label class="priority__option" [class]="'tone-' + priorityMeta[priority].tone">
+            <input type="radio" formControlName="priority" [value]="priority" />
+            <span>{{ priorityMeta[priority].label }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <footer class="drawer__footer">
+      <button type="button" class="btn btn--ghost" (click)="close()">Cancelar</button>
+      <button type="submit" class="btn btn--primary" [disabled]="isSubmitting()">
+        @if (isSubmitting()) {
+          <span class="spinner" aria-hidden="true"></span>
+          Guardando…
+        } @else {
+          Crear incidencia
+        }
+      </button>
+    </footer>
+  </form>
+</aside>

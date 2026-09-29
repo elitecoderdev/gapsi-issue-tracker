@@ -1,0 +1,80 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.tabs__item {
+  position: relative;
+  height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 120ms ease, background-color 120ms ease;
+
+  &:hover { color: var(--text); }
+
+  &.is-active {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+}
+
+.toolbar__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  svg {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+}
+
+.search__input {
+  width: 300px;
+  height: 36px;
+  padding-left: 36px;
+}
+
+.priority__select {
+  width: 200px;
+  height: 36px;
+}
+
+.clear {
+  height: 36px;
+}
+
+@media (max-width: 720px) {
+  .toolbar { padding: 12px; }
+  .toolbar__controls,
+  .search,
+  .priority { width: 100%; }
+  .search__input,
+  .priority__select { width: 100%; }
+}

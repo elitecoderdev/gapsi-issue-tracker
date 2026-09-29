@@ -1,0 +1,78 @@
+<div class="login">
+  <section class="login__hero" aria-hidden="true">
+    <app-brand-logo [size]="34" />
+    <div class="hero__copy">
+      <h1>Gestiona cada incidencia <span>en tiempo real.</span></h1>
+      <p>Registra, prioriza y da seguimiento a los problemas de tu equipo desde un solo panel.</p>
+    </div>
+    <ul class="hero__stats">
+      <li><strong class="tabular">3</strong><span>estados de flujo</span></li>
+      <li><strong class="tabular">3</strong><span>niveles de prioridad</span></li>
+      <li><strong>JWT</strong><span>sesiones seguras</span></li>
+    </ul>
+    <div class="hero__grid"></div>
+  </section>
+
+  <section class="login__panel">
+    <form class="login__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="login__mobile-brand"><app-brand-logo /></div>
+      <header>
+        <h2>Iniciar sesión</h2>
+        <p>Ingresa con tu usuario y contraseña.</p>
+      </header>
+
+      @if (sessionExpired()) {
+        <div class="alert alert--info" role="status">Tu sesión expiró. Vuelve a iniciar sesión.</div>
+      }
+      @if (errorMessage(); as message) {
+        <div class="alert alert--error" role="alert">{{ message }}</div>
+      }
+
+      <label class="field">
+        <span class="field__label">Usuario</span>
+        <input
+          class="input"
+          formControlName="username"
+          autocomplete="username"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="Ej. admin"
+          [class.is-invalid]="form.controls.username.touched && form.controls.username.invalid"
+        />
+        <app-field-error [control]="form.controls.username" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Contraseña</span>
+        <span class="password">
+          <input
+            class="input"
+            formControlName="password"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            [type]="showPassword() ? 'text' : 'password'"
+            [class.is-invalid]="form.controls.password.touched && form.controls.password.invalid"
+          />
+          <button
+            type="button"
+            class="password__toggle"
+            [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            (click)="togglePasswordVisibility()"
+          >
+            {{ showPassword() ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </span>
+        <app-field-error [control]="form.controls.password" />
+      </label>
+
+      <button type="submit" class="btn btn--primary btn--block" [disabled]="isSubmitting()">
+        @if (isSubmitting()) {
+          <span class="spinner" aria-hidden="true"></span>
+          Ingresando…
+        } @else {
+          Iniciar sesión
+        }
+      </button>
+    </form>
+  </section>
+</div>

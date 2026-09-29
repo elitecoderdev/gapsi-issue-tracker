@@ -1,0 +1,33 @@
+<header class="topbar">
+  <div class="topbar__inner">
+    <a routerLink="/issues" class="topbar__brand" aria-label="Ir al inicio">
+      <app-brand-logo />
+    </a>
+
+    <nav class="topbar__nav" aria-label="Principal">
+      <a routerLink="/issues" routerLinkActive="is-active" class="topbar__link">Incidencias</a>
+    </nav>
+
+    <div class="topbar__user">
+      @if (user(); as currentUser) {
+        <div class="user-chip">
+          <span class="user-chip__avatar" aria-hidden="true">{{ initials() }}</span>
+          <span class="user-chip__meta">
+            <span class="user-chip__name">{{ currentUser.fullName }}</span>
+            <span class="user-chip__username">&#64;{{ currentUser.username }}</span>
+          </span>
+        </div>
+      }
+      <button type="button" class="btn btn--ghost btn--sm" (click)="logout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+        </svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="content">
+  <router-outlet />
+</main>

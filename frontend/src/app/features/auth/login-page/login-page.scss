@@ -1,0 +1,123 @@
+.login {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.login__hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 56px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgb(252 213 53 / 14%), transparent 45%),
+    radial-gradient(circle at 80% 90%, rgb(14 203 129 / 10%), transparent 40%),
+    var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+.hero__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at 60% 50%, #000 0%, transparent 70%);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.hero__copy {
+  position: relative;
+  max-width: 520px;
+
+  h1 {
+    font-size: clamp(32px, 3.6vw, 48px);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -1px;
+
+    span { color: var(--brand); }
+  }
+
+  p {
+    margin-top: 16px;
+    color: var(--text-muted);
+    font-size: 16px;
+  }
+}
+
+.hero__stats {
+  position: relative;
+  display: flex;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li { display: flex; flex-direction: column; }
+  strong { font-size: 24px; font-weight: 700; }
+  span { color: var(--text-muted); font-size: 13px; }
+}
+
+.login__panel {
+  display: grid;
+  place-items: center;
+  padding: 32px 24px;
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+
+  h2 { font-size: 28px; font-weight: 700; }
+  header p { margin-top: 6px; color: var(--text-muted); }
+}
+
+.login__mobile-brand {
+  display: none;
+}
+
+.password {
+  position: relative;
+  display: block;
+
+  .input { padding-right: 84px; }
+}
+
+.password__toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  padding: 4px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transform: translateY(-50%);
+
+  &:hover { color: var(--brand); }
+}
+
+.alert {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+
+  &--error { background: var(--red-soft); color: var(--red); }
+  &--info { background: var(--brand-soft); color: var(--brand); }
+}
+
+@media (max-width: 900px) {
+  .login { grid-template-columns: 1fr; }
+  .login__hero { display: none; }
+  .login__mobile-brand { display: block; }
+}

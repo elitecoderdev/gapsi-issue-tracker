@@ -1,0 +1,59 @@
+<div class="toolbar">
+  <div class="tabs" role="tablist" aria-label="Filtrar por estado">
+    <button
+      type="button"
+      role="tab"
+      class="tabs__item"
+      [class.is-active]="filters().status === null"
+      [attr.aria-selected]="filters().status === null"
+      (click)="statusChange.emit(null)"
+    >
+      Todas
+    </button>
+    @for (status of statuses; track status) {
+      <button
+        type="button"
+        role="tab"
+        class="tabs__item"
+        [class.is-active]="filters().status === status"
+        [attr.aria-selected]="filters().status === status"
+        (click)="statusChange.emit(status)"
+      >
+        {{ statusMeta[status].label }}
+      </button>
+    }
+  </div>
+
+  <div class="toolbar__controls">
+    <label class="search">
+      <span class="visually-hidden">Buscar incidencias</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
+      <input
+        class="input search__input"
+        type="search"
+        placeholder="Buscar por título, descripción o autor"
+        [value]="searchTerm()"
+        (input)="onSearch($event)"
+      />
+    </label>
+
+    <label class="priority">
+      <span class="visually-hidden">Filtrar por prioridad</span>
+      <select class="select priority__select" (change)="onPriorityChange($event)">
+        <option value="" [selected]="filters().priority === null">Todas las prioridades</option>
+        @for (priority of priorities; track priority) {
+          <option [value]="priority" [selected]="filters().priority === priority">
+            Prioridad {{ priorityMeta[priority].label.toLowerCase() }}
+          </option>
+        }
+      </select>
+    </label>
+
+    @if (hasActiveFilters()) {
+      <button type="button" class="btn btn--ghost clear" (click)="clear.emit()">Limpiar filtros</button>
+    }
+  </div>
+</div>
