@@ -2,6 +2,8 @@
 
 Aplicación web full stack para la gestión de incidencias, construida con **Angular 22**, **Python 3.13 + FastAPI**, **Google Firestore** y desplegada en **Google Cloud Run**.
 
+**Autor:** Luis Jiménez ([@elitecoderdev](https://github.com/elitecoderdev))
+
 | Recurso | URL |
 | --- | --- |
 | Aplicación web | https://issue-tracker-web-426124835343.us-central1.run.app |
@@ -83,7 +85,11 @@ El script habilita las APIs y crea la base Firestore con sus índices compuestos
 
 | Proyecto | Comando | Resultado |
 | --- | --- | --- |
-| Backend | `pytest` | 16 pruebas (autenticación, validaciones, filtros, resumen, errores y cabeceras de seguridad) |
+| Backend | `pytest` | 45 pruebas · **99.7 % de cobertura** (líneas y ramas) · el build falla si baja del 95 % |
 | Backend | `ruff check .` | Sin observaciones |
-| Frontend | `ng test` | Pruebas unitarias de la capa de datos y del manejo de errores |
+| Backend | `pip-audit -r requirements.txt` | Sin vulnerabilidades conocidas |
+| Frontend | `ng test --coverage` | 122 pruebas en 24 archivos · **99.8 % statements, 99.6 % ramas, 99.3 % funciones, 100 % líneas** · umbral obligatorio del 95 % |
+| Frontend | `npm audit --omit=dev` | 0 vulnerabilidades |
 | Frontend | `ng build` | Build de producción con modo estricto de TypeScript y de plantillas |
+
+Las pruebas del backend usan una implementación simulada de Firestore (`tests/fakes.py`), así que el repositorio real se prueba sin depender de GCP.
