@@ -9,7 +9,7 @@
     "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
   },
   "variable": [
-    { "key": "baseUrl", "value": "__BASE_URL__" },
+    { "key": "baseUrl", "value": "https://issue-tracker-web-426124835343.us-central1.run.app/api" },
     { "key": "username", "value": "evaluador" },
     { "key": "password", "value": "Gapsi#Evalua2026" },
     { "key": "accessToken", "value": "" },
