@@ -6,6 +6,13 @@ requires-python = ">=3.12"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "--cov=app --cov=scripts --cov-report=term-missing --cov-fail-under=95"
+filterwarnings = ["ignore::DeprecationWarning:starlette.*", "ignore::DeprecationWarning:fastapi.*"]
+
+[tool.coverage.run]
+branch = true
 
 [tool.ruff]
 line-length = 120

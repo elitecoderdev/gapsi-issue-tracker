@@ -98,7 +98,7 @@ Todas las respuestas de error comparten el mismo contrato:
 - **Contraseñas:** se guardan con hash Argon2id. Cuando el usuario no existe, igual se verifica contra un hash ficticio, para que el tiempo de respuesta no revele qué usuarios existen.
 - **Mensajes de login:** son idénticos para un usuario inexistente y para una contraseña incorrecta.
 - **JWT:** se exigen `exp`, `iat`, `iss` y `sub`, y el algoritmo queda fijado en la configuración.
-- **Límite de intentos:** 5 intentos fallidos por usuario por minuto (configurable).
+- **Límite de intentos:** 5 intentos fallidos por usuario por minuto (configurable). Las entradas vencidas se eliminan en cada verificación, así que enviar nombres de usuario al azar no hace crecer la memoria.
 - **Cabeceras de seguridad:** `nosniff`, `X-Frame-Options: DENY`, `HSTS`, `no-referrer` y `Cache-Control: no-store`.
 - **Validación estricta de entrada:** `extra="forbid"`, longitudes máximas y patrón para los IDs.
 - **Contenedor:** se ejecuta con un usuario sin privilegios (`uid 10001`) y con una imagen multi-stage mínima.
@@ -130,7 +130,10 @@ uvicorn app.main:app --reload --port 8000
 ```bash
 pytest
 ruff check .
+pip-audit -r requirements.txt
 ```
+
+`pytest` mide la cobertura por líneas y por ramas y falla si baja del 95 %; el resultado actual es 99.7 % con 45 pruebas. El repositorio de Firestore se prueba contra un doble en memoria (`tests/fakes.py`) que reproduce filtros, orden, límites, agregaciones y fallos de red.
 
 ### Carga de usuarios (seed)
 
