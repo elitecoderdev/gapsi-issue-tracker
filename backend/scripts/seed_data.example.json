@@ -1,0 +1,26 @@
+{
+  "users": [
+    { "username": "admin", "full_name": "Administrador", "password": "replace-with-a-strong-password" },
+    { "username": "analyst", "full_name": "Analista QA", "password": "replace-with-a-strong-password" }
+  ],
+  "issues": [
+    {
+      "title": "Error 500 al exportar reporte mensual",
+      "description": "Al exportar el reporte de ventas de agosto a CSV la API responde 500.",
+      "priority": "high",
+      "created_by": "admin"
+    },
+    {
+      "title": "Actualizar textos del formulario de registro",
+      "description": "Los mensajes de validación no están traducidos al español.",
+      "priority": "low",
+      "created_by": "analyst"
+    },
+    {
+      "title": "Lentitud en listado de pedidos",
+      "description": "El listado tarda más de 4 segundos con más de 1.000 registros.",
+      "priority": "medium",
+      "created_by": "analyst"
+    }
+  ]
+}
