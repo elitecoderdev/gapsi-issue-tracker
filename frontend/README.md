@@ -80,6 +80,23 @@ npm run build
 
 `npm start` levanta la aplicación en `http://localhost:4200` con proxy de `/api` hacia `http://localhost:8000` (ver `proxy.conf.json`).
 
+## Pruebas
+
+```bash
+npx ng test --watch=false --coverage
+```
+
+La suite tiene 122 pruebas en 24 archivos (Vitest) y mide la cobertura sobre **todo** `src/app`. `angular.json` exige un mínimo del 95 % en statements, ramas, funciones y líneas. Resultado actual: 99.8 % statements · 99.6 % ramas · 99.3 % funciones · 100 % líneas.
+
+Qué cubren las pruebas:
+- **Servicios:** auth, sesión, toasts y título de página.
+- **Guards e interceptor:** token, 401 y URLs excluidas.
+- **Store:** carga, filtros, búsqueda, actualización optimista con rollback y estados de error.
+- **Componentes:** todos, con sus eventos, validaciones y estados vacío, de carga y de error.
+- **Rutas:** que carguen de forma diferida con los guards correctos.
+
+Las fábricas de datos de prueba están en `src/app/testing/`.
+
 ## Despliegue
 
 `Dockerfile` multi-stage:
